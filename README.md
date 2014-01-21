@@ -6,6 +6,7 @@ easily convert markdown files to point files.
 
 See the examples/hello directory for how to use it in real life:
 
+	% git clone git://git.2f30.org/catpoint
 	% cd catpoint
 	% make
 	% cp catpoint $HOME/bin
