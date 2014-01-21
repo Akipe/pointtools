@@ -1,4 +1,7 @@
 #!/bin/sh
+#
+# See LICENSE for license details.
+#
 
 mkfilename() {
 	printf "%.4d-%s" "$1" "$2" | tr '# :.' '_'

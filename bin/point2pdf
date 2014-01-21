@@ -1,4 +1,7 @@
 #!/bin/sh
+#
+# See the LICENSE file for license details.
+#
 
 name="slides"
 [ $# -gt 0 ] && name="$1"
