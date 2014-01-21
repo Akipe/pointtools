@@ -1,0 +1,8 @@
+#!/bin/sh
+
+name="slides"
+[ $# -gt 0 ] && name="$1"
+
+enscript *.txt -Brf "Courier16" -p - > "${name}.ps"
+ps2pdf "${name}.ps"
+
