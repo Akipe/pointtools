@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ $# -gt 0 ];
+then
+	cd "$1"
+fi
+
+rm *.txt
+cat *.md | md2point
+catpoint *.txt
+
