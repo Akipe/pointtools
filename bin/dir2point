@@ -5,7 +5,8 @@ then
 	cd "$1"
 fi
 
-rm *.txt
+rm *.txt 2>/dev/null
+
 cat *.md | md2point
 catpoint *.txt
 
