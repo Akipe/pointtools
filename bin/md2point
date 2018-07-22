@@ -1,10 +1,11 @@
 #!/bin/sh
-#
-# See LICENSE for license details.
-#
+
+# colors
+reset="$(tput sgr0)"
+quoteformat="$(tput setaf 6)"
 
 mkfilename() {
-	printf "%.4d-%s" "$1" "$2" | tr '# :.' '_'
+	printf "%.4d-%s" "$1" "$2" | tr '# :.()/' '_'
 	printf ".txt"
 }
 
@@ -30,11 +31,11 @@ do
 		fname="$(mkfilename "$snum" "$title")"
 		snum=$((snum + 1))
 		printf "\n  %s\n  %s\n\n" \
-			"$title" "$(mkunderline $titlelen "=")" > $fname
+			"$title" "$(mkunderline $titlelen "=")" >> $fname
 		;;
 	*)
 		[ -n "$fname" ] && \
-			printf "  %s\n" "$line" \
+			printf " %s\n" "$line" \
 			| sed 's,\t,        ,' \
 			| sed 's,\*,o,' >> $fname
 		;;
