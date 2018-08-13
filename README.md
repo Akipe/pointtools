@@ -19,5 +19,7 @@ There are not many formatting options for now, but it’s enough for daily
 usage. If you need any graph or formatting, use  troff(1)  and  all  the
 formatting available there.
 
+md2point requires utf8expr gopher:// bitreich.org/1/scm/utf8expr/log.gph
+
 Have fun!
 
