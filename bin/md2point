@@ -36,7 +36,7 @@ do
 	*)
 		[ -n "$fname" ] && \
 			printf " %s\n" "$line" \
-			| sed 's,\t,        ,' \
+			| sed 's,	,        ,' \
 			| sed 's,\*,o,' >> $fname
 		;;
 	esac
