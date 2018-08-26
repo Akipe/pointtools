@@ -1,9 +1,5 @@
 #!/bin/sh
 
-# colors
-reset="$(tput sgr0)"
-quoteformat="$(tput setaf 6)"
-
 mkfilename() {
 	printf "%.4d-%s" "$1" "$2" | tr '# :.()/' '_'
 	printf ".txt"
@@ -37,7 +33,7 @@ do
 		[ -n "$fname" ] && \
 			printf " %s\n" "$line" \
 			| sed 's,	,        ,' \
-			| sed 's,\*,o,' >> $fname
+			| sed 's,^\([[:blank:]]*\)\*,\1o,' >> $fname
 		;;
 	esac
 done
