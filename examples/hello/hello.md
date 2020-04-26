@@ -19,3 +19,5 @@ Just show something on this new slide.
 
 Thanks for using cattools.
 
+#pause
+The end.

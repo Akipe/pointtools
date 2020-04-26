@@ -29,6 +29,11 @@ do
 		printf "\n  %s\n  %s\n\n" \
 			"$title" "$(mkunderline $titlelen "=")" >> $fname
 		;;
+	\#pause)
+		fname="$(mkfilename "$snum" "$title")"
+		cat "$(mkfilename "$((snum - 1))" "$title")" >> $fname
+		snum=$((snum + 1))
+		;;
 	*)
 		[ -n "$fname" ] && \
 			printf " %s\n" "$line" \
