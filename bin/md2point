@@ -27,7 +27,7 @@ do
 		fname="$(mkfilename "$snum" "$title")"
 		snum=$((snum + 1))
 		printf "\n  %s\n  %s\n\n" \
-			"$title" "$(mkunderline $titlelen "=")" >> $fname
+			"$title" "$(mkunderline $titlelen "=")" > $fname
 		;;
 	\#pause)
 		fname="$(mkfilename "$snum" "$title")"
