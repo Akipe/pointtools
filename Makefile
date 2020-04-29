@@ -1,3 +1,5 @@
+# pointtools
+# See LICENSE for license details.
 PREFIX=	/usr/local
 
 bin/md2point: md2point.o
