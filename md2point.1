@@ -27,6 +27,11 @@ Lines beginning with
 .Em #pause
 denote breaks within slides.
 .Pp
+Lines beginning with
+.Em \e
+will remove this leading backslash and print the remaining line.
+This can be used for escaping all other formatting.
+.Pp
 Any other text and formatting is reproduced exactly in the output.
 .Sh EXIT STATUS
 .Nm
