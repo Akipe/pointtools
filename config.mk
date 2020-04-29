@@ -14,7 +14,11 @@ INCS = -I. -I/usr/include
 LIBS = -L/usr/lib -lc -lbsd
 
 # flags
-CPPFLAGS = -DVERSION=\"${VERSION}\"
+# Linux
+CPPFLAGS = -DVERSION=\"${VERSION}\" -D_POSIX_C_SOURCE=1
+# BSD
+#CPPFLAGS = -DVERSION=\"${VERSION}\"
+
 CFLAGS += -g -std=c99 -pedantic -Wall -Wvariadic-macros -Os ${INCS} ${CPPFLAGS}
 LDFLAGS += -g ${LIBS}
 
