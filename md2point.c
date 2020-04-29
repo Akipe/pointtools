@@ -132,7 +132,14 @@ main(void)
 		if (line[0] == '%')
 			continue;
 
-		if (line[0] == '#' && line[1] == '#') {
+		if (line[0] == '\\') {
+			if (line[1] == '\0')
+				continue;
+
+			/* ignore text before first header */
+			if (fp)
+				fprintesc(fp, line+1);
+		} else if (line[0] == '#' && line[1] == '#') {
 			if (fp) {
 				fclose(fp);
 				fp = NULL;
