@@ -1,0 +1,42 @@
+.Dd $Mdocdate$
+.Dt MD2POINT 1
+.Os
+.Sh NAME
+.Nm md2point
+.Nd converts markdown into catpoint presentation files
+.Sh SYNOPSIS
+.Nm
+.Sh DESCRIPTION
+The
+.Nm
+utility reads markdown from stdin and writes formatted text files
+to the current directory.  The output text files are intended for
+use with catpoint.  The output files are named in a consecutive
+manner with the title in the file name.
+.Sh MARKDOWN FORMAT
+.Pp
+Lines beginning with
+.Em ## 
+are treated as slide titles, and serve as delimiters between output
+slides.
+.Pp
+Lines beginning with
+.Em %
+are treated as comments, and are not reproduced in the output.
+.Pp
+Lines beginning with
+.Em #pause
+denote breaks within slides.
+.Pp
+Any other text and formatting is reproduced exactly in the output.
+.Sh EXIT STATUS
+.Nm
+exits with 0 on success, and >0 if a a runtime error occurs.
+.Sh SEE ALSO
+.Xr catpoint
+.Xr dir2point
+.Sh AUTHORS
+.An Anders Damsgaard Aq Mt anders@adamsgaard.dk ,
+and
+.An Christoph Lohmann Aq Mt 20h@r-36.net
+(original implementation).
