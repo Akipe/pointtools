@@ -3,5 +3,4 @@
   ======
 
   
-  Thanks for using cattools.
   
