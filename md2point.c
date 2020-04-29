@@ -1,24 +1,21 @@
 /*
  * See LICENSE for license details.
  */
-#include <unistd.h>
+#include <err.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <err.h>
 #include <string.h>
-
-char buf[PATH_MAX];
+#include <unistd.h>
 
 /* from git://bitreich.org/utf8expr */
 size_t
-utf8strlen(char *s)
+utf8strlen(const char *s)
 {
 	size_t i;
 
-	i = 0;
-	for (; s[0]; s++) {
-		if ((s[0] & 0xc0) != 0x80)
+	for (i = 0; *s; s++) {
+		if ((*s & 0xc0) != 0x80)
 			i++;
 	}
 
@@ -26,77 +23,79 @@ utf8strlen(char *s)
 }
 
 void
-fprintunderline(FILE *fp, char *str, size_t linelen)
+fprintunderline(FILE *fp, const char *str)
 {
 	size_t i;
+
 	fprintf(fp, "\n  %s\n  ", str);
-	for (i=0; i<=utf8strlen(str); ++i)
+	for (i = 0; i <= utf8strlen(str); ++i)
 		fputs("=", fp);
 	fputs("\n\n", fp);
 }
 
 void
-escapechars(char *s, size_t linelen)
+escapechars(char *s)
 {
-	size_t i;
-	for (i=0; i<linelen && *s != '\0'; (void)*s++, i++)
+	for (; *s; s++) {
 		switch (*s) {
-			case '#':
-			case ' ':
-			case '	':
-			case ':':
-			case '.':
-			case '(':
-			case ')':
-			case '/':
-				*s = '_';
-				break;
-			case '\n':
-				*s = '\0';
-				return;
-			default:
-				break;
+		case '#':
+		case ' ':
+		case '\t':
+		case ':':
+		case '.':
+		case '(':
+		case ')':
+		case '/':
+			*s = '_';
+			break;
+		case '\n':
+			*s = '\0';
+			return;
+		default:
+			break;
 		}
+	}
 }
 
 void
-fprintesc(FILE *fp, char *s, ssize_t len)
+fprintesc(FILE *fp, const char *s)
 {
-	ssize_t i;
-	int intext;
+	int intext = 0;
 
-	intext = 0;
 	fputs("  ", fp);
-	for (i=0; i<len && s[i] != '\0'; i++)
-		switch (s[i]) {
-			case ' ':
-				fputc(' ', fp);
-				break;
-			case '\t':
-				fprintf(fp, "        ");
-				break;
-			case '*':
-				if (intext) {
-					fputc(s[i], fp);
-				} else {
-					fputc('o', fp);
-					intext = 1;
-				}
-				break;
-			default:
+	for (; *s; s++) {
+		switch (*s) {
+		case ' ':
+			fputc(' ', fp);
+			break;
+		case '\t':
+			fprintf(fp, "        ");
+			break;
+		case '*':
+			if (intext) {
+				fputc(*s, fp);
+			} else {
+				fputc('o', fp);
 				intext = 1;
-				fputc(s[i], fp);
-				break;
+			}
+			break;
+		default:
+			intext = 1;
+			fputc(*s, fp);
+			break;
 		}
+	}
 	fputs("\n", fp);
 }
 
 void
-mkfilename(char *fname, char *str, size_t len, int i)
+mkfilename(char *fname, char *str, size_t bufsiz, int i)
 {
-	strlcpy(buf, str, len);
-	escapechars(buf, len);
-	snprintf(fname, len, "%.4d-%s.txt", i, buf);
+	char buf[PATH_MAX];
+
+	strlcpy(buf, str, sizeof(buf));
+	escapechars(buf);
+	snprintf(fname, bufsiz, "%.4d-%s.txt", i, buf);
 }
 
 void
@@ -105,7 +104,7 @@ copyfile(char *dst, char *src)
 	int c;
 	FILE *fsrc, *fdst;
 
-	if (strlen(src) < 1 || strlen(dst) < 1 ||
+	if (src[0] == '\0' || dst[0] == '\0' ||
 		!(fsrc = fopen(src, "r")) || !(fdst = fopen(dst, "w")))
 		err(1, "copyfile: %s -> %s", src, dst);
 
@@ -117,54 +116,53 @@ copyfile(char *dst, char *src)
 }
 
 int
-main(int argc, char* argv[])
+main(void)
 {
-	int i;
-	static char *line;
-	static size_t linesize;
+	size_t i = 0;
+	char *line = NULL;
+	size_t linesize = 0;
 	ssize_t linelen;
-	char title[PATH_MAX], fname[PATH_MAX], fname_old[PATH_MAX];
-	FILE *fp;
+	char title[PATH_MAX] = "", fname[PATH_MAX] = "", fname_old[PATH_MAX] = "";
+	FILE *fp = NULL;
 
-	fp = NULL;
-	title[0] = fname[0] = fname_old[0] = '\0';
-	i = 0;
 	while ((linelen = getline(&line, &linesize, stdin)) > 0) {
-
-		if (line[linelen-1] == '\n')
+		if (line[linelen - 1] == '\n')
 			line[--linelen] = '\0';
 
-		if (linelen > 1 && line[0] == '#' && line[1] == '#') {
-			if (fp)
-				fclose(fp);
-			strlcpy(title, line+2, PATH_MAX);
-			mkfilename(fname, title, PATH_MAX, i++);
-			if (!(fp = fopen(fname, "w")))
-				err(1, "fopen: %s", fname);
-			if (linelen == 2)
-				fputs("\n", fp);
-			else
-				fprintunderline(fp, title, linelen);
-
-		} else if (linelen > 0 && line[0] == '%') {
+		if (line[0] == '%')
 			continue;
 
-		} else if (linelen > 5 && !strncmp(line, "#pause", linelen)) {
-			if (fp)
+		if (line[0] == '#' && line[1] == '#') {
+			if (fp) {
 				fclose(fp);
-			strlcpy(fname_old, fname, PATH_MAX);
-			mkfilename(fname, title, PATH_MAX, i++);
-	 		copyfile(fname, fname_old);
-			if (strlen(fname) > 0 && !(fp = fopen(fname, "a")))
+				fp = NULL;
+			}
+			strlcpy(title, line + 2, sizeof(title));
+			mkfilename(fname, title, sizeof(fname), i++);
+			if (!(fp = fopen(fname, "w")))
 				err(1, "fopen: %s", fname);
-
+			if (line[2] == '\0')
+				fputs("\n", fp);
+			else
+				fprintunderline(fp, title);
+		} else if (linelen > 5 && !strncmp(line, "#pause", linelen)) {
+			if (fp) {
+				fclose(fp);
+				fp = NULL;
+			}
+			strlcpy(fname_old, fname, sizeof(fname_old));
+			mkfilename(fname, title, sizeof(fname), i++);
+			copyfile(fname, fname_old);
+			if (fname[0] != '\0' && !(fp = fopen(fname, "a")))
+				err(1, "fopen: %s", fname);
 		} else {
 			/* ignore text before first header */
 			if (fp)
-				fprintesc(fp, line, linelen);
+				fprintesc(fp, line);
 		}
 	}
 
 	free(line);
+
 	return 0;
 }
