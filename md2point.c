@@ -25,10 +25,11 @@ utf8strlen(const char *s)
 void
 fprintunderline(FILE *fp, const char *str)
 {
-	size_t i;
+	size_t i, len;
 
 	fprintf(fp, "\n  %s\n  ", str);
-	for (i = 0; i <= utf8strlen(str); ++i)
+	len = utf8strlen(str);
+	for (i = 0; i <= len; ++i)
 		fputs("=", fp);
 	fputs("\n\n", fp);
 }
