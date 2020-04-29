@@ -2,12 +2,11 @@
  * See LICENSE for license details.
  */
 #include <unistd.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <err.h>
 #include <string.h>
-
-#define PATH_MAX 128
 
 char buf[PATH_MAX];
 
