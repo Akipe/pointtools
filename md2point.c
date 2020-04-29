@@ -77,10 +77,13 @@ fprintesc(FILE *fp, char *s, ssize_t len)
 				fprintf(fp, "        ");
 				break;
 			case '*':
-				if (!intext) {
+				if (intext) {
+					fputc(s[i], fp);
+				} else {
 					fputc('o', fp);
-					break;
+					intext = 1;
 				}
+				break;
 			default:
 				intext = 1;
 				fputc(s[i], fp);
