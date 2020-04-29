@@ -100,7 +100,7 @@ mkfilename(char *fname, char *str, size_t len, int i)
 void
 copyfile(char *dst, char *src)
 {
-	char c;
+	int c;
 	FILE *fsrc, *fdst;
 
 	if (strlen(src) < 1 || strlen(dst) < 1 ||
