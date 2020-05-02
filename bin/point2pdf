@@ -6,5 +6,8 @@
 name="slides"
 [ $# -gt 0 ] && name="$1"
 
-enscript *.txt -Brf "Courier16" -p - | ps2pdf - "${name}.pdf"
+enscript *.txt -Brf "Courier16" \
+	-I "cat %s | iconv -c -f utf-8 -t iso-8859-1//translit" \
+	-p - \
+	| ps2pdf - "${name}.pdf"
 
