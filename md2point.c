@@ -8,6 +8,30 @@
 #include <string.h>
 #include <unistd.h>
 
+#ifdef NEED_STRLCPY /* OpenBSD implementation */
+size_t
+strlcpy(char *dst, const char *src, size_t dsize) {
+	const char *osrc = src;
+	size_t nleft = dsize;
+
+	if (nleft != 0) {
+		while (--nleft != 0) {
+			if ((*dst++= *src++) == '\0')
+				break;
+		}
+	}
+
+	if (nleft == 0) {
+		if (dsize != 0)
+			*dst = '\0';
+		while (*src++)
+			;
+	}
+
+	return(src - osrc - 1);
+}
+#endif /* NEED_STRLCPY */
+
 /* from git://bitreich.org/utf8expr */
 size_t
 utf8strlen(const char *s)

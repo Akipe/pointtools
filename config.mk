@@ -1,4 +1,3 @@
-
 VERSION="0.3"
 
 # paths
@@ -10,12 +9,10 @@ INCS = -I. -I/usr/include
 
 # BSD
 #LIBS = -L/usr/lib -lc
-# Linux
-LIBS = -L/usr/lib -lc -lbsd
 
 # flags
 # Linux
-CPPFLAGS = -DVERSION=\"${VERSION}\" -D_POSIX_C_SOURCE=1
+CPPFLAGS = -DVERSION=\"${VERSION}\" -D_POSIX_C_SOURCE=200809L -DNEED_STRLCPY
 # BSD
 #CPPFLAGS = -DVERSION=\"${VERSION}\"
 
@@ -24,4 +21,3 @@ LDFLAGS += -g ${LIBS}
 
 # compiler and linker
 # CC = cc
-
