@@ -21,6 +21,7 @@ install:
 	install -m 755 bin/dir2point $(DESTDIR)$(PREFIX)/bin/dir2point
 	install -m 755 bin/md2point  $(DESTDIR)$(PREFIX)/bin/md2point
 	install -m 755 bin/point2pdf $(DESTDIR)$(PREFIX)/bin/point2pdf
+	install -m 755 bin/pptx2md $(DESTDIR)$(PREFIX)/bin/pptx2md
 	mkdir -p $(DESTDIR)$(MANPREFIX)/man1
 	install -m 644 md2point.1    $(DESTDIR)$(MANPREFIX)/man1/md2point.1
 

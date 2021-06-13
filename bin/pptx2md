@@ -1,0 +1,55 @@
+#!/bin/sh
+#
+# See LICENSE for license details.
+#
+# This is based on:
+#     https://github.com/revan/pptx2md
+#
+# The algorithm was simplified to the essence of what the ugly
+# pptx format is capable of. Microsoft amateurs are unable to use
+# XML properly.
+#
+# Requires: xml2tsv (git://bitreich.org/xml2tsv)
+#
+
+if [ $# -lt 1 ];
+then
+	printf "usage: %s file.pptx\n" "$(basename "$0")" >&2
+	exit 1
+fi
+
+pptxfile="$1"
+mdfile="$1.md"
+tmpdir="$(mktemp -u)"
+
+unzip -oq -d "${tmpdir}" "${pptxfile}"
+if [ $? -ne 0 ];
+then
+	printf "Failed to extract %s.\n" "${pptxfile}"
+	exit 1
+fi
+
+for slidefile in ${tmpdir}/ppt/slides/*.xml;
+do
+	linenum=0
+	cat "${slidefile}" \
+	| xml2tsv 2>/dev/null \
+	| grep a:r/a:t \
+	| cut -s -f 2 \
+	| while read -r line;
+	do
+		if [ $linenum -eq 0 ];
+		then
+			printf "## %s\n" "${line}" >> "${mdfile}"
+		else
+			printf "%s\n" "${line}" >> "${mdfile}"
+		fi
+		linenum=1
+	done
+	printf "\n" >> "${mdfile}"
+done
+
+
+rm -r "$tmpdir"
+exit 0
+
