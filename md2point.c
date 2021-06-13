@@ -62,23 +62,20 @@ void
 escapechars(char *s)
 {
 	for (; *s; s++) {
-		switch (*s) {
-		case '#':
-		case ' ':
-		case '\t':
-		case ':':
-		case '.':
-		case '(':
-		case ')':
-		case '/':
-			*s = '_';
-			break;
-		case '\n':
+		if (*s == '\n') {
 			*s = '\0';
 			return;
-		default:
-			break;
 		}
+
+		/*
+		 * Only allow ASCII printable a-zA-Z0-9 for simplicity.
+		 */
+		if ((*s >= 'a' && *s <= 'z')
+				|| (*s >= 'A' && *s <= 'Z')
+				|| (*s >= '0' && *s <= '9')) {
+			continue;
+		}
+		*s = '_';
 	}
 }
 
