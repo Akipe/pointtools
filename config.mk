@@ -16,8 +16,8 @@ CPPFLAGS = -DVERSION=\"${VERSION}\" -D_POSIX_C_SOURCE=200809L -DNEED_STRLCPY
 # BSD
 #CPPFLAGS = -DVERSION=\"${VERSION}\"
 
-CFLAGS += -g -std=c99 -pedantic -Wall -Wvariadic-macros -Os ${INCS} ${CPPFLAGS}
-LDFLAGS += -g ${LIBS}
+CFLAGS += -std=c99 ${INCS} ${CPPFLAGS}
+LDFLAGS += ${LIBS}
 
 # compiler and linker
 # CC = cc
